@@ -16,8 +16,8 @@ header('Content-Type: text/html; charset=UTF-8');
 <!DOCTYPE html>
 <title>ログインしています</title>
 <h1>ログインしています</h1>
-<iframe src="http://localhost:8085/" style="visibility: hidden;"></iframe>
-<iframe src="http://localhost:8086/" style="visibility: hidden;"></iframe>
+<iframe src="http://localhost:8085/login.php" style="visibility: hidden;"></iframe>
+<iframe src="http://localhost:8086/login.php" style="visibility: hidden;"></iframe>
 <p>
     JavaScriptが無効の場合は<a href="/">こちら</a>をクリックしてください．<br>
     その場合，シングルサインオンはご利用いただけません．
