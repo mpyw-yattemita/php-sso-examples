@@ -45,10 +45,7 @@ header('Content-Type: text/html; charset=UTF-8');
                 };
                 return new Promise(r => iframe.addEventListener('load', r))
                 // iframeを読み込み終わるまで待ってから実行
-                .then(() => iframe.contentWindow.postMessage(
-                    JSON.stringify(message),
-                    iframe.dataset.origin
-                ));
+                .then(() => iframe.contentWindow.postMessage(message, iframe.dataset.origin));
             })
         )
         // 全てのiframeに対してメッセージを送信し終えてから実行

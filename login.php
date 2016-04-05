@@ -62,15 +62,14 @@ header('Content-Type: text/html; charset=UTF-8');
             default:
                 return;
         }
-        let message = JSON.parse(e.data);
         // セッションID上書きイベントを取り扱う
-        if (message.operation === 'overwrite-session-id') {
+        if (e.data.operation === 'overwrite-session-id') {
             document.cookie =
             document.cookie
             .split('; ')
             .map(pair =>
                 pair.indexOf('PHPSESSID=') === 0
-                ? 'PHPSESSID=' + message.value
+                ? 'PHPSESSID=' + e.data.value
                 : pair
             ).join('; ');
         }

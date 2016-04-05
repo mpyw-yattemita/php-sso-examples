@@ -23,9 +23,8 @@ header('Content-Type: text/html; charset=UTF-8');
             default:
                 return;
         }
-        let message = JSON.parse(e.data);
         // セッションID破棄イベントを取り扱う
-        if (message.operation === 'destroy-session-id') {
+        if (e.data.operation === 'destroy-session-id') {
             document.cookie =
             document.cookie
             .split('; ')
