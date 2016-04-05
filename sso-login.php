@@ -16,37 +16,46 @@ header('Content-Type: text/html; charset=UTF-8');
 <!DOCTYPE html>
 <title>ログインしています</title>
 <h1>ログインしています</h1>
-<iframe src="http://localhost:8080/login.php" style="visibility: hidden;"></iframe>
-<iframe src="http://127.0.0.1:8081/login.php" style="visibility: hidden;"></iframe>
+<form target="ifr0" method="get" action="http://localhost:8080/login.php"></form>
+<form target="ifr1" method="get" action="http://127.0.0.1:8081/login.php"></form>
+<iframe name="ifr0" style="visibility: hidden;" data-origin="http://localhost:8080"></iframe>
+<iframe name="ifr1" style="visibility: hidden;" data-origin="http://127.0.0.1:8081"></iframe>
 <p>
     JavaScriptが無効の場合は<a href="/">こちら</a>をクリックしてください．<br>
     その場合，シングルサインオンはご利用いただけません．
 </p>
 <script>
-    new Promise(r => addEventListener('DOMContentLoaded', r))
-    // DOMを読み込み終わるまで待ってから実行
-    .then(() => Promise.all(
-        // 全てのiframeに対して適用
+    addEventListener('DOMContentLoaded', () => {
+        // DOMを読み込み終わるまで待ってから実行
+
+        Promise.all(
+            // 全てのiframeに対して適用
+            Array
+            .from(document.querySelectorAll('iframe'))
+            .map(iframe => {
+                // ログイン済みのセッションIDをPHPから受け取る
+                let id = <?=json_encode(session_id())?>;
+                // メッセージを定義
+                let message = {
+                    operation: 'overwrite-session-id',
+                    value: id,
+                };
+                return new Promise(r => iframe.addEventListener('load', r))
+                // iframeを読み込み終わるまで待ってから実行
+                .then(() => iframe.contentWindow.postMessage(
+                    JSON.stringify(message),
+                    iframe.dataset.origin
+                ));
+            })
+        )
+        // 全てのiframeに対してメッセージを送信し終えてから実行
+        .then(() => location.replace('/'))
+        .catch(e => console.error(e));
+
+        // 全てのformからiframeに対して送信
         Array
-        .from(document.querySelectorAll('iframe'))
-        .map(iframe => {
-            // ログイン済みのセッションIDをPHPから受け取る
-            let id = <?=json_encode(session_id())?>;
-            // a要素を使ってURLからオリジンを抽出
-            let a = document.createElement('a');
-            a.href = iframe.src;
-            let origin = a.origin;
-            // メッセージを定義
-            let message = {
-                operation: 'overwrite-session-id',
-                value: id,
-            };
-            return new Promise(r => iframe.addEventListener('load', r))
-            // iframeを読み込み終わるまで待ってから実行
-            .then(() => iframe.contentWindow.postMessage(JSON.stringify(message), origin));
-        })
-    ))
-    // 全てのiframeに対してメッセージを送信し終えてから実行
-    .then(() => location.replace('/'))
-    .catch(e => console.error(e));
+        .from(document.querySelectorAll('form'))
+        .forEach(form => form.submit());
+
+    });
 </script>
