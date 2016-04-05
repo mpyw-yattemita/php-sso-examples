@@ -15,21 +15,17 @@ header('Content-Type: text/html; charset=UTF-8');
 </p>
 <script>
     addEventListener('message', e => {
-        // CSRF対策
-        if (!/^http:\/\/localhost:808[56]$/.test(e.origin)) return;
+        // CSRF対策のため，許可したオリジン以外からのメッセージは無視する
+        switch (e.origin) {
+            case 'http://localhost:8080':
+            case 'http://127.0.0.1:8081':
+                break;
+            default:
+                return;
+        }
         let message = JSON.parse(e.data);
-        if (message.operation === 'overwrite-session-id') {
-            // Cookie上書きイベントの場合
-            document.cookie =
-            document.cookie
-            .split('; ')
-            .map(pair =>
-                pair.indexOf('PHPSESSID=') === 0
-                ? 'PHPSESSID=' + message.value
-                : pair
-            ).join('; ');
-        } else if (message.operation === 'destroy-session-id') {
-            // Cookie破棄イベントの場合
+        // セッションID破棄イベントを取り扱う
+        if (message.operation === 'destroy-session-id') {
             document.cookie =
             document.cookie
             .split('; ')

@@ -52,3 +52,27 @@ header('Content-Type: text/html; charset=UTF-8');
 <?php if (http_response_code() === 403): ?>
 <p style="color: red;">ユーザ名またはパスワードが違います</p>
 <?php endif; ?>
+<script>
+    addEventListener('message', e => {
+        // CSRF対策のため，許可したオリジン以外からのメッセージは無視する
+        switch (e.origin) {
+            case 'http://localhost:8080':
+            case 'http://127.0.0.1:8081':
+                break;
+            default:
+                return;
+        }
+        let message = JSON.parse(e.data);
+        // セッションID上書きイベントを取り扱う
+        if (message.operation === 'overwrite-session-id') {
+            document.cookie =
+            document.cookie
+            .split('; ')
+            .map(pair =>
+                pair.indexOf('PHPSESSID=') === 0
+                ? 'PHPSESSID=' + message.value
+                : pair
+            ).join('; ');
+        }
+    });
+</script>

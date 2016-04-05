@@ -19,23 +19,33 @@ header('Content-Type: text/html; charset=UTF-8');
 <!DOCTYPE html>
 <title>ログアウトしました</title>
 <h1>ログアウトしました</h1>
-<iframe src="http://localhost:8085/" style="visibility: hidden;"></iframe>
-<iframe src="http://localhost:8086/" style="visibility: hidden;"></iframe>
+<iframe src="http://localhost:8080/" style="visibility: hidden;"></iframe>
+<iframe src="http://127.0.0.1:8081/" style="visibility: hidden;"></iframe>
 <p>
     JavaScriptが無効の場合は<a href="/">こちら</a>をクリックしてください．
 </p>
 <script>
-    // 全オリジンに対してCookie破棄イベントを発行
-    Array
-    .from(document.querySelectorAll('iframe'))
-    .map(e => {
-        let a = document.createElement('a');
-        a.href = e.src;
-        let message = {
-            operation: 'destroy-session-id'
-        };
-        e.contentWindow.postMessage(JSON.stringify(message), a.origin);
-    });
-    // ページ遷移 (履歴に残さない)
-    window.location = '/';
+    new Promise(r => addEventListener('DOMContentLoaded', r))
+    // DOMを読み込み終わるまで待ってから実行
+    .then(() => Promise.all(
+        // 全てのiframeに対して適用
+        Array
+        .from(document.querySelectorAll('iframe'))
+        .map(iframe => {
+            // a要素を使ってURLからオリジンを抽出
+            let a = document.createElement('a');
+            a.href = iframe.src;
+            let origin = a.origin;
+            // メッセージを定義
+            let message = {
+                operation: 'destroy-session-id'
+            };
+            return new Promise(r => iframe.addEventListener('load', r))
+            // iframeを読み込み終わるまで待ってから実行
+            .then(() => iframe.contentWindow.postMessage(JSON.stringify(message), origin));
+        })
+    ))
+    // 全てのiframeに対してメッセージを送信し終えてから実行
+    .then(() => location.replace('/'))
+    .catch(e => console.error(e));
 </script>

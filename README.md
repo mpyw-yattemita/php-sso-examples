@@ -16,5 +16,5 @@ mpyw@localhost:~/php-sso-examples$ ./run.sh
 
 この状態でWebブラウザから以下のURLに，それぞれ別のウィンドウでアクセスして検証してください．
 
-- [http://localhost:8085/](http://localhost:8085/)
-- [http://localhost:8086/](http://localhost:8086/)
+- [http://localhost:8080/](http://localhost:8080/)
+- [http://127.0.0.1:8081/](http://127.0.0.1:8081/)
