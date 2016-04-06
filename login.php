@@ -53,6 +53,8 @@ header('Content-Type: text/html; charset=UTF-8');
 <p style="color: red;">ユーザ名またはパスワードが違います</p>
 <?php endif; ?>
 <script>
+    'use strict';
+
     addEventListener('message', e => {
         // CSRF対策のため，許可したオリジン以外からのメッセージは無視する
         switch (e.origin) {

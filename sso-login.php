@@ -25,6 +25,8 @@ header('Content-Type: text/html; charset=UTF-8');
     その場合，シングルサインオンはご利用いただけません．
 </p>
 <script>
+    'use strict';
+
     addEventListener('DOMContentLoaded', () => {
         // DOMを読み込み終わるまで待ってから実行
 

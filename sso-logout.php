@@ -27,6 +27,8 @@ header('Content-Type: text/html; charset=UTF-8');
     JavaScriptが無効の場合は<a href="/">こちら</a>をクリックしてください．
 </p>
 <script>
+    'use strict';
+
     addEventListener('DOMContentLoaded', () => {
         // DOMを読み込み終わるまで待ってから実行
 

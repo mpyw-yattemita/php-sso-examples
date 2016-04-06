@@ -14,6 +14,8 @@ header('Content-Type: text/html; charset=UTF-8');
     <a href="/sso-logout.php?token=<?=h(generate_token())?>">ログアウト</a>
 </p>
 <script>
+    'use strict';
+
     addEventListener('message', e => {
         // CSRF対策のため，許可したオリジン以外からのメッセージは無視する
         switch (e.origin) {
